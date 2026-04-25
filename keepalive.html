@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BotGuard — 24/7 Uptime</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --bg: #050a0f;
+    --surface: #0c1419;
+    --border: #1a2a35;
+    --green: #00ff88;
+    --green-dim: #00ff8822;
+    --green-mid: #00ff8855;
+    --red: #ff3355;
+    --yellow: #ffcc00;
+    --text: #c8dde8;
+    --muted: #4a6070;
+    --glow: 0 0 20px #00ff8844;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,255,136,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,136,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Scanline overlay */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--green);
+    text-shadow: var(--glow);
+  }
+
+  .logo span { color: var(--text); }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    border: 1px solid var(--green-mid);
+    padding: 6px 14px;
+    border-radius: 2px;
+    background: var(--green-dim);
+  }
+
+  .pulse-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    animation: pulse 1.4s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    margin-bottom: 52px;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 10vw, 5.5rem);
+    letter-spacing: 4px;
+    line-height: 1;
+    margin-bottom: 16px;
+    color: #fff;
+    text-shadow: 0 0 40px rgba(0,255,136,0.2);
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--green);
+    text-shadow: var(--glow);
+  }
+
+  .hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  /* ── MAIN CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+  }
+
+  .card-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  /* ── URL INPUT ── */
+  .input-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+
+  .url-input {
+    flex: 1;
+    background: #060d12;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .url-input::placeholder { color: var(--muted); }
+
+  .url-input:focus {
+    border-color: var(--green-mid);
+    box-shadow: 0 0 0 3px var(--green-dim);
+  }
+
+  .btn {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    padding: 13px 28px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: #050a0f;
+  }
+
+  .btn-primary:hover {
+    background: #00ffaa;
+    box-shadow: var(--glow);
+    transform: translateY(-1px);
+  }
+
+  .btn-danger {
+    background: transparent;
+    border: 1px solid var(--red);
+    color: var(--red);
+    font-size: 0.85rem;
+    padding: 8px 16px;
+  }
+
+  .btn-danger:hover {
+    background: rgba(255,51,85,0.1);
+  }
+
+  /* ── INTERVAL ── */
+  .interval-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .interval-row label {
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .interval-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+  }
+
+  .interval-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    background: var(--green);
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  .interval-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--green);
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .stat-box {
+    background: #060d12;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .stat-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+    line-height: 1;
+    margin-bottom: 4px;
+    color: var(--green);
+  }
+
+  .stat-val.red { color: var(--red); }
+  .stat-val.yellow { color: var(--yellow); }
+
+  .stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── LOG ── */
+  .log-wrap {
+    background: #060d12;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    height: 180px;
+    overflow-y: auto;
+    padding: 12px 16px;
+    scroll-behavior: smooth;
+  }
+
+  .log-wrap::-webkit-scrollbar { width: 4px; }
+  .log-wrap::-webkit-scrollbar-track { background: transparent; }
+  .log-wrap::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .log-line {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.9;
+    display: flex;
+    gap: 12px;
+    border-bottom: 1px solid rgba(26,42,53,0.4);
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: none; } }
+
+  .log-time { color: var(--muted); flex-shrink: 0; }
+  .log-ok   { color: var(--green); }
+  .log-err  { color: var(--red); }
+  .log-info { color: var(--yellow); }
+
+  /* ── CONTROLS ── */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  /* ── NEXT PING ── */
+  .next-ping {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .next-ping span { color: var(--green); }
+
+  /* ── HOW TO ── */
+  .how-to {
+    margin-top: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 28px 32px;
+  }
+
+  .how-to h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 3px;
+    font-size: 1.2rem;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    color: var(--green);
+    letter-spacing: 1px;
+    flex-shrink: 0;
+    line-height: 1.3;
+  }
+
+  .step-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .step-text code {
+    font-family: 'Share Tech Mono', monospace;
+    background: #060d12;
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    color: var(--green);
+  }
+
+  /* ── PING BAR HISTORY ── */
+  .ping-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 32px;
+    margin-top: 16px;
+  }
+
+  .bar {
+    flex: 1;
+    background: var(--green-mid);
+    border-radius: 1px;
+    min-height: 4px;
+    transition: height 0.3s ease;
+  }
+
+  .bar.fail { background: rgba(255,51,85,0.5); }
+
+  footer {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo">Bot<span>Guard</span></div>
+    <div class="status-badge">
+      <div class="pulse-dot" id="headerDot"></div>
+      <span id="headerStatus">STANDBY</span>
+    </div>
+  </header>
+
+  <div class="hero">
+    <h1>KEEP YOUR BOT<br><em>ALIVE 24/7</em></h1>
+    <p>Ping your Replit URL on a schedule so it never sleeps. No account needed — runs directly in your browser.</p>
+  </div>
+
+  <!-- Main card -->
+  <div class="card">
+    <div class="card-label">// Target Configuration</div>
+
+    <div class="input-row">
+      <input class="url-input" id="urlInput" type="url"
+        placeholder="https://your-project.username.repl.co" />
+      <button class="btn btn-primary" id="startBtn" onclick="toggleMonitor()">START</button>
+    </div>
+
+    <div class="interval-row">
+      <label>Ping every</label>
+      <input class="interval-slider" id="intervalSlider" type="range"
+        min="1" max="30" value="5" oninput="updateInterval(this.value)">
+      <div class="interval-val" id="intervalVal">5 min</div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-val" id="statPings">0</div>
+      <div class="stat-label">Total Pings</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val red" id="statFails">0</div>
+      <div class="stat-label">Failures</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-val yellow" id="statUptime">—</div>
+      <div class="stat-label">Uptime %</div>
+    </div>
+  </div>
+
+  <!-- Log card -->
+  <div class="card">
+    <div class="card-label">// Live Ping Log</div>
+    <div class="log-wrap" id="logWrap">
+      <div class="log-line">
+        <span class="log-time">--:--:--</span>
+        <span class="log-info">Waiting for target URL...</span>
+      </div>
+    </div>
+
+    <div class="ping-bars" id="pingBars">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="controls">
+      <div class="next-ping" id="nextPingLabel">Next ping: <span>—</span></div>
+      <button class="btn btn-danger" onclick="clearLog()">CLEAR LOG</button>
+    </div>
+  </div>
+
+  <!-- How to -->
+  <div class="how-to">
+    <h3>// How To Use</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-text">
+          Add a simple HTTP server to your bot. In Python:
+          <code>from flask import Flask; app = Flask(__name__); @app.route('/'); run(host='0.0.0.0', port=8080)</code>
+          — this gives Replit a URL to serve.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-text">
+          Copy your Replit project's public URL — it looks like
+          <code>https://name.username.repl.co</code> — and paste it above.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-text">
+          Set the ping interval (5 minutes recommended) and click <strong>START</strong>.
+          Keep this tab open in your browser. Every ping resets Replit's sleep timer.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-text">
+          For true 24/7 uptime even when your browser is closed, host this HTML file on Vercel or GitHub Pages and open it from another always-on device.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>BOTGUARD v1.0 &nbsp;·&nbsp; CLIENT-SIDE ONLY &nbsp;·&nbsp; NO DATA COLLECTED</footer>
+
+</div>
+
+<script>
+  let running = false;
+  let timer = null;
+  let countdown = null;
+  let intervalMin = 5;
+  let pings = 0, fails = 0;
+  let nextTick = 0;
+  let barHistory = [];
+
+  function updateInterval(v) {
+    intervalMin = parseInt(v);
+    document.getElementById('intervalVal').textContent = v + ' min';
+  }
+
+  function toggleMonitor() {
+    if (!running) startMonitor();
+    else stopMonitor();
+  }
+
+  function startMonitor() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url || !url.startsWith('http')) {
+      log('error', 'Enter a valid URL starting with https://');
+      shake();
+      return;
+    }
+    running = true;
+    document.getElementById('startBtn').textContent = 'STOP';
+    document.getElementById('startBtn').style.background = 'var(--red)';
+    document.getElementById('headerStatus').textContent = 'ACTIVE';
+    document.getElementById('headerDot').style.background = 'var(--green)';
+    log('info', 'Monitor started → ' + url);
+    doPing(url);
+    scheduleNext(url);
+  }
+
+  function stopMonitor() {
+    running = false;
+    clearTimeout(timer);
+    clearInterval(countdown);
+    document.getElementById('startBtn').textContent = 'START';
+    document.getElementById('startBtn').style.background = 'var(--green)';
+    document.getElementById('headerStatus').textContent = 'STANDBY';
+    document.getElementById('nextPingLabel').innerHTML = 'Next ping: <span>—</span>';
+    log('info', 'Monitor stopped.');
+  }
+
+  function scheduleNext(url) {
+    if (!running) return;
+    nextTick = Date.now() + intervalMin * 60 * 1000;
+
+    clearInterval(countdown);
+    countdown = setInterval(() => {
+      if (!running) { clearInterval(countdown); return; }
+      const rem = Math.max(0, Math.round((nextTick - Date.now()) / 1000));
+      const m = Math.floor(rem / 60), s = rem % 60;
+      document.getElementById('nextPingLabel').innerHTML =
+        `Next ping: <span>${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>`;
+    }, 1000);
+
+    timer = setTimeout(() => {
+      doPing(url);
+      scheduleNext(url);
+    }, intervalMin * 60 * 1000);
+  }
+
+  async function doPing(url) {
+    const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+    const t0 = Date.now();
+    try {
+      const res = await fetch(proxyUrl, { cache: 'no-cache' });
+      const ms = Date.now() - t0;
+      if (res.ok) {
+        pings++;
+        addBar(true, ms);
+        log('ok', `200 OK — ${ms}ms — ${url}`);
+      } else {
+        pings++; fails++;
+        addBar(false, ms);
+        log('error', `HTTP ${res.status} — ${ms}ms`);
+      }
+    } catch (e) {
+      pings++; fails++;
+      addBar(false, 0);
+      log('error', 'Ping failed — ' + e.message);
+    }
+    updateStats();
+  }
+
+  function addBar(ok, ms) {
+    barHistory.push({ ok, ms });
+    if (barHistory.length > 40) barHistory.shift();
+    const container = document.getElementById('pingBars');
+    container.innerHTML = '';
+    const maxMs = Math.max(...barHistory.map(b => b.ms), 500);
+    barHistory.forEach(b => {
+      const div = document.createElement('div');
+      div.className = 'bar' + (b.ok ? '' : ' fail');
+      div.style.height = Math.max(6, Math.round((b.ms / maxMs) * 28)) + 'px';
+      div.title = b.ok ? b.ms + 'ms' : 'FAIL';
+      container.appendChild(div);
+    });
+  }
+
+  function updateStats() {
+    document.getElementById('statPings').textContent = pings;
+    document.getElementById('statFails').textContent = fails;
+    const up = pings > 0 ? (((pings - fails) / pings) * 100).toFixed(1) : '—';
+    document.getElementById('statUptime').textContent = pings > 0 ? up + '%' : '—';
+  }
+
+  function log(type, msg) {
+    const wrap = document.getElementById('logWrap');
+    const now = new Date();
+    const t = [now.getHours(), now.getMinutes(), now.getSeconds()]
+      .map(n => String(n).padStart(2,'0')).join(':');
+
+    const line = document.createElement('div');
+    line.className = 'log-line';
+
+    const cls = type === 'ok' ? 'log-ok' : type === 'error' ? 'log-err' : 'log-info';
+    const prefix = type === 'ok' ? '✓' : type === 'error' ? '✗' : '→';
+
+    line.innerHTML = `<span class="log-time">${t}</span><span class="${cls}">${prefix} ${msg}</span>`;
+    wrap.appendChild(line);
+    wrap.scrollTop = wrap.scrollHeight;
+
+    // Keep log trimmed
+    while (wrap.children.length > 120) wrap.removeChild(wrap.firstChild);
+  }
+
+  function clearLog() {
+    document.getElementById('logWrap').innerHTML = '';
+    log('info', 'Log cleared.');
+  }
+
+  function shake() {
+    const inp = document.getElementById('urlInput');
+    inp.style.borderColor = 'var(--red)';
+    inp.style.animation = 'none';
+    setTimeout(() => inp.style.borderColor = '', 1200);
+  }
+
+  // Initialize bars
+  for (let i = 0; i < 20; i++) {
+    const div = document.createElement('div');
+    div.className = 'bar';
+    div.style.height = '4px';
+    div.style.opacity = '0.2';
+    document.getElementById('pingBars').appendChild(div);
+  }
+</script>
+</body>
+</html>
