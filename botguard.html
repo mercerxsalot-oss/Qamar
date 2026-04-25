@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BotGuard — 24/7 Uptime</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+  --bg: #040810;
+  --surface: #080f18;
+  --border: #0f2030;
+  --green: #00ff88;
+  --green-dim: #00ff8815;
+  --green-mid: #00ff8840;
+  --red: #ff3355;
+  --yellow: #ffd000;
+  --cyan: #00cfff;
+  --text: #b8d4e8;
+  --muted: #3a5568;
+  --glow: 0 0 24px #00ff8855;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── GRID BG ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,136,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,136,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── SCANLINES ── */
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  background:repeating-linear-gradient(
+    0deg,transparent,transparent 3px,
+    rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px
+  );
+  pointer-events:none;z-index:0;
+}
+
+/* ── GLITCH KEYFRAMES ── */
+@keyframes glitch1{
+  0%,94%,100%{transform:translate(0);}
+  95%{transform:translate(-3px,1px);filter:hue-rotate(90deg);}
+  97%{transform:translate(3px,-1px);filter:hue-rotate(-90deg);}
+  99%{transform:translate(-1px,2px);}
+}
+@keyframes glitch2{
+  0%,85%,100%{clip-path:none;transform:translate(0);}
+  86%{clip-path:inset(30% 0 50% 0);transform:translate(4px,0);color:var(--red);}
+  88%{clip-path:inset(60% 0 10% 0);transform:translate(-4px,0);color:var(--cyan);}
+  90%{clip-path:none;transform:translate(0);color:inherit;}
+}
+@keyframes flicker{
+  0%,100%{opacity:1;}
+  92%{opacity:1;}
+  93%{opacity:.6;}
+  94%{opacity:1;}
+  96%{opacity:.8;}
+  97%{opacity:1;}
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 6px var(--green);}
+  50%{opacity:.3;transform:scale(.6);box-shadow:none;}
+}
+@keyframes slideIn{
+  from{opacity:0;transform:translateX(-10px);}
+  to{opacity:1;transform:none;}
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+@keyframes scanMove{
+  0%{top:-10%;}100%{top:110%;}
+}
+@keyframes countUp{from{opacity:0;transform:scale(.8);}to{opacity:1;transform:scale(1);}}
+
+.container{
+  position:relative;z-index:1;
+  max-width:880px;margin:0 auto;
+  padding:36px 20px 60px;
+}
+
+/* ── HEADER ── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:44px;padding-bottom:18px;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+header::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+  animation:flicker 4s infinite;
+}
+
+.logo{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.6rem;font-weight:900;
+  letter-spacing:4px;
+  color:var(--green);
+  text-shadow:var(--glow);
+  animation:glitch1 6s infinite;
+}
+.logo span{color:var(--text);}
+.logo sub{
+  font-size:.45rem;letter-spacing:3px;
+  color:var(--muted);display:block;
+  font-weight:400;margin-top:2px;
+}
+
+.live-badge{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.72rem;letter-spacing:2px;
+  color:var(--green);
+  border:1px solid var(--green-mid);
+  padding:7px 14px;border-radius:2px;
+  background:var(--green-dim);
+  animation:flicker 5s infinite 1s;
+}
+.pulse-dot{
+  width:8px;height:8px;
+  background:var(--green);border-radius:50%;
+  animation:pulse 1.4s ease-in-out infinite;
+}
+
+/* ── GLITCH HERO ── */
+.hero{
+  text-align:center;margin-bottom:44px;
+  position:relative;
+}
+.hero h1{
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(2.2rem,8vw,4.8rem);
+  font-weight:900;letter-spacing:3px;line-height:1.1;
+  margin-bottom:14px;color:#fff;
+  animation:glitch2 8s infinite;
+}
+.hero h1 em{
+  font-style:normal;color:var(--green);
+  text-shadow:var(--glow);display:block;
+}
+.hero p{
+  color:var(--muted);font-size:.95rem;font-weight:300;
+  max-width:500px;margin:0 auto;line-height:1.8;
+}
+
+/* ── TIPS BAR ── */
+.tips-bar{
+  background:var(--green-dim);
+  border:1px solid var(--green-mid);
+  border-radius:2px;
+  padding:10px 16px;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.72rem;color:var(--green);
+  letter-spacing:1px;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+  overflow:hidden;
+  animation:flicker 7s infinite 2s;
+}
+.tips-bar::before{content:'▶';flex-shrink:0;}
+#tipText{animation:slideIn .4s ease;}
+
+/* ── CARD ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:28px;margin-bottom:18px;
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+  animation:flicker 4s infinite 0.5s;
+}
+
+/* Scan line on card */
+.card::after{
+  content:'';
+  position:absolute;
+  left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(0,255,136,.15),transparent);
+  animation:scanMove 3s linear infinite;
+  pointer-events:none;
+}
+
+.card-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.66rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:18px;
+}
+
+/* ── INPUT ── */
+.input-row{display:flex;gap:10px;margin-bottom:20px;}
+
+.url-input{
+  flex:1;
+  background:#030810;
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:13px 16px;
+  color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  font-size:.88rem;outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.url-input::placeholder{color:var(--muted);}
+.url-input:focus{
+  border-color:var(--green-mid);
+  box-shadow:0 0 0 3px var(--green-dim);
+}
+
+.btn{
+  font-family:'Orbitron',sans-serif;
+  font-size:.8rem;font-weight:700;
+  letter-spacing:2px;
+  padding:13px 24px;
+  border:none;border-radius:2px;
+  cursor:pointer;transition:all .2s;
+  white-space:nowrap;
+}
+.btn-primary{background:var(--green);color:#040810;}
+.btn-primary:hover{
+  background:#00ffaa;
+  box-shadow:var(--glow);
+  transform:translateY(-1px);
+}
+.btn-stop{background:var(--red);color:#fff;}
+.btn-stop:hover{box-shadow:0 0 20px #ff335544;transform:translateY(-1px);}
+
+/* ── INTERVAL ── */
+.interval-row{
+  display:flex;align-items:center;gap:14px;
+}
+.interval-row label{
+  font-size:.82rem;color:var(--muted);white-space:nowrap;
+}
+.interval-slider{
+  flex:1;-webkit-appearance:none;
+  height:3px;background:var(--border);
+  border-radius:2px;outline:none;cursor:pointer;
+}
+.interval-slider::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  width:16px;height:16px;
+  background:var(--green);border-radius:50%;
+  box-shadow:0 0 8px var(--green);cursor:pointer;
+}
+.interval-val{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.82rem;color:var(--green);
+  min-width:52px;text-align:right;
+}
+
+/* ── FEATURES ROW ── */
+.feat-row{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;margin-bottom:18px;
+}
+.feat-box{
+  background:#030810;
+  border:1px solid var(--border);
+  border-radius:2px;padding:14px;
+  display:flex;align-items:flex-start;gap:10px;
+}
+.feat-icon{font-size:1.2rem;flex-shrink:0;line-height:1.4;}
+.feat-info{font-size:.75rem;line-height:1.6;}
+.feat-info strong{
+  display:block;color:var(--text);
+  font-family:'Share Tech Mono',monospace;
+  font-size:.7rem;letter-spacing:1px;
+  margin-bottom:2px;
+}
+.feat-info span{color:var(--muted);}
+
+/* ── STATS ── */
+.stats-row{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:12px;margin-bottom:18px;
+}
+.stat-box{
+  background:#030810;border:1px solid var(--border);
+  border-radius:2px;padding:16px;text-align:center;
+  transition:border-color .3s;
+}
+.stat-box.active{border-color:var(--green-mid);}
+.stat-val{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.9rem;font-weight:900;
+  letter-spacing:1px;line-height:1;
+  margin-bottom:4px;color:var(--green);
+  animation:countUp .3s ease;
+}
+.stat-val.red{color:var(--red);}
+.stat-val.yellow{color:var(--yellow);}
+.stat-val.cyan{color:var(--cyan);}
+.stat-label{
+  font-size:.62rem;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted);
+}
+
+/* ── LOG ── */
+.log-header{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:12px;
+}
+.log-wrap{
+  background:#030810;
+  border:1px solid var(--border);
+  border-radius:2px;
+  height:190px;overflow-y:auto;
+  padding:10px 14px;
+  scroll-behavior:smooth;
+  position:relative;
+}
+.log-wrap::-webkit-scrollbar{width:3px;}
+.log-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+
+.log-line{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.72rem;line-height:1.9;
+  display:flex;gap:12px;
+  animation:slideIn .25s ease;
+  border-bottom:1px solid rgba(15,32,48,.5);
+}
+.log-time{color:var(--muted);flex-shrink:0;}
+.log-ok{color:var(--green);}
+.log-err{color:var(--red);}
+.log-info{color:var(--yellow);}
+.log-sys{color:var(--cyan);}
+
+/* ── PING BARS ── */
+.bars-wrap{
+  margin-top:14px;
+}
+.bars-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.62rem;color:var(--muted);
+  letter-spacing:1px;margin-bottom:6px;
+  display:flex;justify-content:space-between;
+}
+.ping-bars{
+  display:flex;align-items:flex-end;gap:2px;
+  height:36px;
+}
+.bar{
+  flex:1;background:var(--green-mid);
+  border-radius:1px;min-height:3px;
+  transition:height .3s ease,background .3s;
+}
+.bar.fail{background:rgba(255,51,85,.45);}
+.bar:hover{filter:brightness(1.5);}
+
+/* ── CONTROLS ── */
+.controls{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-top:16px;gap:12px;
+  flex-wrap:wrap;
+}
+.next-ping{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.75rem;color:var(--muted);
+}
+.next-ping span{color:var(--green);}
+.cursor-blink{animation:blink .8s step-end infinite;}
+
+.small-btns{display:flex;gap:8px;}
+.btn-sm{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.68rem;letter-spacing:1px;
+  padding:7px 14px;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--muted);
+  border-radius:2px;cursor:pointer;
+  transition:all .2s;
+}
+.btn-sm:hover{border-color:var(--green-mid);color:var(--green);}
+
+/* ── SAVED URLS ── */
+.saved-section{margin-top:8px;}
+.saved-label{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.65rem;letter-spacing:2px;
+  color:var(--muted);margin-bottom:8px;
+}
+.saved-list{display:flex;flex-wrap:wrap;gap:6px;}
+.saved-chip{
+  font-family:'Share Tech Mono',monospace;
+  font-size:.68rem;
+  background:#030810;
+  border:1px solid var(--border);
+  border-radius:2px;
+  padding:5px 10px;
+  color:var(--text);
+  cursor:pointer;
+  transition:all .2s;
+  display:flex;align-items:center;gap:6px;
+  max-width:220px;overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis;
+}
+.saved-chip:hover{border-color:var(--green-mid);color:var(--green);}
+.chip-del{
+  color:var(--red);font-size:.8rem;
+  flex-shrink:0;opacity:.6;
+}
+.chip-del:hover{opacity:1;}
+
+/* ── HOW TO ── */
+.how-to{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:3px;
+  padding:26px 28px;
+  margin-top:18px;
+  position:relative;overflow:hidden;
+}
+.how-to::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+}
+.how-to h3{
+  font-family:'Orbitron',sans-serif;
+  letter-spacing:3px;font-size:1rem;
+  color:var(--cyan);margin-bottom:18px;
+  font-weight:700;
+}
+.steps{display:flex;flex-direction:column;gap:14px;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{
+  font-family:'Orbitron',sans-serif;
+  font-size:1.1rem;font-weight:900;
+  color:var(--green);flex-shrink:0;
+  line-height:1.4;min-width:28px;
+}
+.step-text{font-size:.83rem;color:var(--muted);line-height:1.7;}
+.step-text code{
+  font-family:'Share Tech Mono',monospace;
+  background:#030810;border:1px solid var(--border);
+  padding:1px 6px;border-radius:2px;
+  font-size:.76rem;color:var(--green);
+}
+.step-text strong{color:var(--text);}
+
+/* ── GLITCH WATERMARK ── */
+.glitch-bg-text{
+  position:fixed;bottom:5%;right:-2%;
+  font-family:'Orbitron',sans-serif;
+  font-size:clamp(5rem,15vw,12rem);
+  font-weight:900;
+  color:rgba(0,255,136,.02);
+  pointer-events:none;z-index:0;
+  letter-spacing:8px;
+  animation:glitch1 10s infinite;
+  user-select:none;
+}
+
+footer{
+  margin-top:44px;text-align:center;
+  font-family:'Share Tech Mono',monospace;
+  font-size:.68rem;color:var(--muted);
+  letter-spacing:2px;line-height:2;
+}
+
+@media(max-width:600px){
+  .stats-row{grid-template-columns:repeat(2,1fr);}
+  .feat-row{grid-template-columns:1fr;}
+  .input-row{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+<div class="glitch-bg-text">24/7</div>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      BOT<span>GUARD</span>
+      <sub>// REPLIT UPTIME SYSTEM</sub>
+    </div>
+    <div class="live-badge">
+      <div class="pulse-dot" id="headerDot" style="background:var(--muted);box-shadow:none;animation:none;"></div>
+      <span id="headerStatus">STANDBY</span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>NEVER<em>GO OFFLINE</em></h1>
+    <p>Keeps your Replit bot alive 24/7 by pinging it on a schedule. Settings survive page refresh — your monitor never resets.</p>
+  </div>
+
+  <!-- TIPS -->
+  <div class="tips-bar"><span id="tipText">Loading tips...</span></div>
+
+  <!-- FEATURES -->
+  <div class="feat-row">
+    <div class="feat-box">
+      <div class="feat-icon">💾</div>
+      <div class="feat-info">
+        <strong>PERSISTENT</strong>
+        <span>Settings & log saved across refreshes via localStorage</span>
+      </div>
+    </div>
+    <div class="feat-box">
+      <div class="feat-icon">⚡</div>
+      <div class="feat-info">
+        <strong>AUTO-RESUME</strong>
+        <span>Monitor restarts automatically if it was running before refresh</span>
+      </div>
+    </div>
+    <div class="feat-box">
+      <div class="feat-icon">🔁</div>
+      <div class="feat-info">
+        <strong>MULTI-URL</strong>
+        <span>Save multiple bot URLs and switch between them instantly</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CARD -->
+  <div class="card">
+    <div class="card-label">// Target URL</div>
+
+    <div class="input-row">
+      <input class="url-input" id="urlInput" type="url"
+        placeholder="https://your-bot.username.repl.co" />
+      <button class="btn btn-primary" id="startBtn" onclick="toggleMonitor()">START</button>
+    </div>
+
+    <div class="interval-row">
+      <label>Ping every</label>
+      <input class="interval-slider" id="intervalSlider" type="range"
+        min="1" max="30" value="5" oninput="updateInterval(this.value)">
+      <div class="interval-val" id="intervalVal">5 min</div>
+    </div>
+
+    <!-- Saved URLs -->
+    <div class="saved-section" id="savedSection" style="display:none;margin-top:16px;">
+      <div class="saved-label">// SAVED BOTS</div>
+      <div class="saved-list" id="savedList"></div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-box" id="sBoxPings">
+      <div class="stat-val" id="statPings">0</div>
+      <div class="stat-label">Pings</div>
+    </div>
+    <div class="stat-box" id="sBoxFails">
+      <div class="stat-val red" id="statFails">0</div>
+      <div class="stat-label">Failures</div>
+    </div>
+    <div class="stat-box" id="sBoxUptime">
+      <div class="stat-val yellow" id="statUptime">—</div>
+      <div class="stat-label">Uptime %</div>
+    </div>
+    <div class="stat-box" id="sBoxRuntime">
+      <div class="stat-val cyan" id="statRuntime">00:00</div>
+      <div class="stat-label">Runtime</div>
+    </div>
+  </div>
+
+  <!-- LOG CARD -->
+  <div class="card">
+    <div class="log-header">
+      <div class="card-label" style="margin:0;">// Live Ping Log</div>
+      <div class="small-btns">
+        <button class="btn-sm" onclick="exportLog()">EXPORT</button>
+        <button class="btn-sm" onclick="clearLog()">CLEAR</button>
+      </div>
+    </div>
+
+    <div class="log-wrap" id="logWrap"></div>
+
+    <div class="bars-wrap">
+      <div class="bars-label">
+        <span>Response history (last 50 pings)</span>
+        <span id="avgMs">avg: —ms</span>
+      </div>
+      <div class="ping-bars" id="pingBars"></div>
+    </div>
+
+    <div class="controls">
+      <div class="next-ping" id="nextPingLabel">
+        Next ping: <span>—<span class="cursor-blink">_</span></span>
+      </div>
+      <div class="small-btns">
+        <button class="btn-sm" onclick="pingNow()">PING NOW</button>
+        <button class="btn-sm" onclick="saveCurrentUrl()">SAVE URL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW TO -->
+  <div class="how-to">
+    <h3>// SETUP GUIDE</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-text">
+          Add a web server to your Replit bot so it has a URL to ping. For <strong>Python (discord.py / any bot)</strong>:
+          <br><br>
+          <code>from flask import Flask</code><br>
+          <code>from threading import Thread</code><br>
+          <code>app = Flask('')</code><br>
+          <code>@app.route('/')</code><br>
+          <code>def home(): return "Bot alive!"</code><br>
+          <code>Thread(target=lambda: app.run(host='0.0.0.0',port=8080)).start()</code>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-text">
+          For <strong>Node.js bots</strong> add: <code>require('http').createServer((_,r)=>r.end('alive')).listen(3000)</code> — Replit will expose it as a URL automatically.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-text">
+          Copy your Replit project's <strong>Webview URL</strong> (looks like <code>https://name.username.repl.co</code>) and paste it above. Click <strong>SAVE URL</strong> to remember it across sessions.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-text">
+          Set interval to <strong>5 minutes</strong> and click <strong>START</strong>. Your settings persist across page refreshes — monitoring auto-resumes if you had it running.
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-text">
+          For <strong>true 24/7</strong> even when your PC is off: host this HTML on <strong>GitHub Pages</strong> for free, open it on a phone/tablet that stays plugged in, or use <strong>UptimeRobot.com</strong> (free tier) pointing to the same Replit URL.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    BOTGUARD v2.0 &nbsp;·&nbsp; ALL DATA STORED LOCALLY &nbsp;·&nbsp; NO SERVER &nbsp;·&nbsp; NO TRACKING<br>
+    REFRESH-SAFE &nbsp;·&nbsp; AUTO-RESUME &nbsp;·&nbsp; MULTI-BOT SUPPORT
+  </footer>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let running = false;
+let pingTimer = null;
+let countdownTimer = null;
+let runtimeTimer = null;
+let intervalMin = 5;
+let pings = 0, fails = 0;
+let nextTick = 0;
+let startTime = null;
+let barHistory = [];
+let msHistory = [];
+let savedUrls = [];
+
+const STORAGE_KEY = 'botguard_state';
+
+// ══════════════════════════════════════════
+//  TIPS
+// ══════════════════════════════════════════
+const TIPS = [
+  'TIP: 5-minute interval is optimal — Replit sleeps after ~30 mins of inactivity.',
+  'TIP: Add a /health endpoint to your bot for cleaner status checks.',
+  'TIP: Save multiple bot URLs to monitor different projects.',
+  'TIP: Use "PING NOW" to test your URL instantly before starting the monitor.',
+  'TIP: Export your log to a .txt file for debugging connection issues.',
+  'TIP: Keep this tab pinned — browser minimized is fine, just don\'t close it.',
+  'TIP: For 24/7 even when browser is closed, deploy this page to GitHub Pages.',
+  'TIP: Node.js bots: use keep-alive headers to reduce response time.',
+  'TIP: UptimeRobot.com (free) can also ping your bot as a backup.',
+  'TIP: If pings fail, check your Replit bot is set to "Always On" in settings.',
+];
+let tipIndex = 0;
+
+function rotateTip() {
+  const el = document.getElementById('tipText');
+  el.style.animation = 'none';
+  el.offsetHeight; // reflow
+  el.style.animation = 'slideIn .4s ease';
+  el.textContent = TIPS[tipIndex % TIPS.length];
+  tipIndex++;
+}
+rotateTip();
+setInterval(rotateTip, 7000);
+
+// ══════════════════════════════════════════
+//  PERSIST / RESTORE
+// ══════════════════════════════════════════
+function saveState() {
+  const url = document.getElementById('urlInput').value.trim();
+  const state = {
+    url,
+    intervalMin,
+    running,
+    pings,
+    fails,
+    barHistory,
+    msHistory,
+    savedUrls,
+    log: getLogLines(),
+    startTime: startTime ? startTime.getTime() : null,
+  };
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+function getLogLines() {
+  const lines = [];
+  document.querySelectorAll('#logWrap .log-line').forEach(el => {
+    lines.push(el.innerHTML);
+  });
+  return lines.slice(-80); // keep last 80
+}
+
+function restoreState() {
+  let state;
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch(e) {}
+  if (!state) {
+    log('sys', 'BotGuard v2.0 ready. Paste your Replit URL and click START.');
+    initBars();
+    return;
+  }
+
+  // Restore values
+  if (state.url) document.getElementById('urlInput').value = state.url;
+  if (state.intervalMin) {
+    intervalMin = state.intervalMin;
+    document.getElementById('intervalSlider').value = intervalMin;
+    document.getElementById('intervalVal').textContent = intervalMin + ' min';
+  }
+  pings = state.pings || 0;
+  fails = state.fails || 0;
+  barHistory = state.barHistory || [];
+  msHistory = state.msHistory || [];
+  savedUrls = state.savedUrls || [];
+
+  if (state.startTime) startTime = new Date(state.startTime);
+
+  // Restore log
+  if (state.log && state.log.length) {
+    const wrap = document.getElementById('logWrap');
+    wrap.innerHTML = '';
+    state.log.forEach(html => {
+      const div = document.createElement('div');
+      div.className = 'log-line';
+      div.innerHTML = html;
+      wrap.appendChild(div);
+    });
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+
+  updateStats();
+  renderBars();
+  renderSaved();
+
+  // Auto-resume
+  if (state.running && state.url) {
+    log('sys', 'Auto-resuming monitor after page refresh...');
+    setTimeout(() => startMonitor(true), 800);
+  } else {
+    log('sys', 'State restored. ' + pings + ' pings recorded previously.');
+  }
+}
+
+// ══════════════════════════════════════════
+//  MONITOR
+// ══════════════════════════════════════════
+function toggleMonitor() {
+  if (!running) startMonitor();
+  else stopMonitor();
+}
+
+function startMonitor(silent = false) {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url || !url.startsWith('http')) {
+    log('err', 'Invalid URL — must start with https://');
+    shakeInput();
+    return;
+  }
+  running = true;
+  if (!startTime) startTime = new Date();
+
+  document.getElementById('startBtn').textContent = 'STOP';
+  document.getElementById('startBtn').className = 'btn btn-stop';
+  document.getElementById('headerStatus').textContent = 'ACTIVE';
+  const dot = document.getElementById('headerDot');
+  dot.style.background = 'var(--green)';
+  dot.style.boxShadow = '0 0 8px var(--green)';
+  dot.style.animation = 'pulse 1.4s ease-in-out infinite';
+
+  if (!silent) log('sys', 'Monitor started → ' + url);
+
+  startRuntimeTimer();
+  doPing(url);
+  scheduleNext(url);
+  saveState();
+}
+
+function stopMonitor() {
+  running = false;
+  clearTimeout(pingTimer);
+  clearInterval(countdownTimer);
+  clearInterval(runtimeTimer);
+
+  document.getElementById('startBtn').textContent = 'START';
+  document.getElementById('startBtn').className = 'btn btn-primary';
+  document.getElementById('headerStatus').textContent = 'PAUSED';
+  const dot = document.getElementById('headerDot');
+  dot.style.background = 'var(--yellow)';
+  dot.style.boxShadow = 'none';
+  dot.style.animation = 'none';
+  document.getElementById('nextPingLabel').innerHTML =
+    'Next ping: <span>PAUSED<span class="cursor-blink">_</span></span>';
+  log('sys', 'Monitor paused.');
+  saveState();
+}
+
+function scheduleNext(url) {
+  if (!running) return;
+  nextTick = Date.now() + intervalMin * 60 * 1000;
+
+  clearInterval(countdownTimer);
+  countdownTimer = setInterval(() => {
+    if (!running) { clearInterval(countdownTimer); return; }
+    const rem = Math.max(0, Math.round((nextTick - Date.now()) / 1000));
+    const m = Math.floor(rem / 60), s = rem % 60;
+    document.getElementById('nextPingLabel').innerHTML =
+      `Next ping: <span>${pad(m)}:${pad(s)}<span class="cursor-blink">_</span></span>`;
+  }, 1000);
+
+  pingTimer = setTimeout(() => {
+    doPing(url);
+    scheduleNext(url);
+  }, intervalMin * 60 * 1000);
+}
+
+async function doPing(url) {
+  const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+  const t0 = Date.now();
+  try {
+    const res = await fetch(proxyUrl, { cache: 'no-cache' });
+    const ms = Date.now() - t0;
+    pings++;
+    if (res.ok) {
+      addBar(true, ms);
+      log('ok', `200 OK — ${ms}ms — ${shortUrl(url)}`);
+    } else {
+      fails++;
+      addBar(false, ms);
+      log('err', `HTTP ${res.status} — ${ms}ms — ${shortUrl(url)}`);
+    }
+  } catch (e) {
+    pings++; fails++;
+    addBar(false, 0);
+    log('err', 'Ping failed — ' + (e.message || 'network error'));
+  }
+  updateStats();
+  saveState();
+}
+
+function pingNow() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url || !url.startsWith('http')) {
+    log('err', 'Enter a valid URL first.');
+    shakeInput(); return;
+  }
+  log('info', 'Manual ping → ' + shortUrl(url));
+  doPing(url);
+}
+
+// ══════════════════════════════════════════
+//  RUNTIME TIMER
+// ══════════════════════════════════════════
+function startRuntimeTimer() {
+  clearInterval(runtimeTimer);
+  runtimeTimer = setInterval(() => {
+    if (!startTime) return;
+    const sec = Math.floor((Date.now() - startTime.getTime()) / 1000);
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    document.getElementById('statRuntime').textContent =
+      h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+  }, 1000);
+}
+
+// ══════════════════════════════════════════
+//  BARS
+// ══════════════════════════════════════════
+function addBar(ok, ms) {
+  barHistory.push({ ok, ms });
+  msHistory.push(ok ? ms : null);
+  if (barHistory.length > 50) { barHistory.shift(); msHistory.shift(); }
+  renderBars();
+}
+
+function renderBars() {
+  const container = document.getElementById('pingBars');
+  container.innerHTML = '';
+  const maxMs = Math.max(...barHistory.map(b => b.ms || 0), 300);
+  barHistory.forEach(b => {
+    const div = document.createElement('div');
+    div.className = 'bar' + (b.ok ? '' : ' fail');
+    const h = b.ok ? Math.max(5, Math.round((b.ms / maxMs) * 32)) : 32;
+    div.style.height = h + 'px';
+    div.title = b.ok ? b.ms + 'ms' : 'FAILED';
+    container.appendChild(div);
+  });
+  // fill empty slots
+  const empty = 50 - barHistory.length;
+  for (let i = 0; i < empty; i++) {
+    const div = document.createElement('div');
+    div.className = 'bar';
+    div.style.height = '3px';
+    div.style.opacity = '.15';
+    container.appendChild(div);
+  }
+  // avg
+  const valid = msHistory.filter(v => v !== null);
+  const avg = valid.length ? Math.round(valid.reduce((a,b) => a+b,0)/valid.length) : null;
+  document.getElementById('avgMs').textContent = avg ? `avg: ${avg}ms` : 'avg: —ms';
+}
+
+function initBars() {
+  renderBars();
+}
+
+// ══════════════════════════════════════════
+//  STATS
+// ══════════════════════════════════════════
+function updateStats() {
+  document.getElementById('statPings').textContent = pings;
+  document.getElementById('statFails').textContent = fails;
+  const up = pings > 0
+    ? (((pings - fails) / pings) * 100).toFixed(1) + '%'
+    : '—';
+  document.getElementById('statUptime').textContent = up;
+  // Highlight
+  document.getElementById('sBoxPings').classList.toggle('active', pings > 0);
+}
+
+// ══════════════════════════════════════════
+//  SAVED URLS
+// ══════════════════════════════════════════
+function saveCurrentUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url || !url.startsWith('http')) {
+    log('err', 'Enter a valid URL to save.'); shakeInput(); return;
+  }
+  if (savedUrls.includes(url)) {
+    log('info', 'URL already saved.'); return;
+  }
+  savedUrls.push(url);
+  renderSaved();
+  saveState();
+  log('sys', 'Saved: ' + shortUrl(url));
+}
+
+function loadUrl(url) {
+  document.getElementById('urlInput').value = url;
+  log('sys', 'Loaded: ' + shortUrl(url));
+}
+
+function deleteUrl(i) {
+  savedUrls.splice(i, 1);
+  renderSaved();
+  saveState();
+}
+
+function renderSaved() {
+  const sec = document.getElementById('savedSection');
+  const list = document.getElementById('savedList');
+  if (!savedUrls.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  list.innerHTML = '';
+  savedUrls.forEach((url, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'saved-chip';
+    chip.title = url;
+    chip.innerHTML = `<span onclick="loadUrl('${url}')" style="flex:1;overflow:hidden;text-overflow:ellipsis;">${shortUrl(url)}</span><span class="chip-del" onclick="deleteUrl(${i})">✕</span>`;
+    list.appendChild(chip);
+  });
+}
+
+// ══════════════════════════════════════════
+//  LOG
+// ══════════════════════════════════════════
+function log(type, msg) {
+  const wrap = document.getElementById('logWrap');
+  const now = new Date();
+  const t = [now.getHours(), now.getMinutes(), now.getSeconds()].map(pad).join(':');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  const cls = {ok:'log-ok',err:'log-err',info:'log-info',sys:'log-sys'}[type] || 'log-info';
+  const pfx = {ok:'✓',err:'✗',info:'→',sys:'◈'}[type] || '·';
+  line.innerHTML = `<span class="log-time">${t}</span><span class="${cls}">${pfx} ${msg}</span>`;
+  wrap.appendChild(line);
+  wrap.scrollTop = wrap.scrollHeight;
+  while (wrap.children.length > 150) wrap.removeChild(wrap.firstChild);
+}
+
+function clearLog() {
+  document.getElementById('logWrap').innerHTML = '';
+  log('sys', 'Log cleared.');
+  saveState();
+}
+
+function exportLog() {
+  const lines = [];
+  document.querySelectorAll('#logWrap .log-line').forEach(el => {
+    lines.push(el.textContent.trim());
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'botguard-log-' + Date.now() + '.txt';
+  a.click();
+}
+
+// ══════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════
+function updateInterval(v) {
+  intervalMin = parseInt(v);
+  document.getElementById('intervalVal').textContent = v + ' min';
+  saveState();
+}
+
+function shakeInput() {
+  const inp = document.getElementById('urlInput');
+  inp.style.borderColor = 'var(--red)';
+  inp.style.boxShadow = '0 0 0 3px rgba(255,51,85,.15)';
+  setTimeout(() => { inp.style.borderColor = ''; inp.style.boxShadow = ''; }, 1200);
+}
+
+function shortUrl(url) {
+  try {
+    const u = new URL(url);
+    return u.hostname + (u.pathname !== '/' ? u.pathname : '');
+  } catch { return url.slice(0, 40); }
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+window.addEventListener('load', () => {
+  restoreState();
+  // Save on interval slider change
+  document.getElementById('intervalSlider').addEventListener('change', saveState);
+  // Save URL on change
+  document.getElementById('urlInput').addEventListener('change', saveState);
+});
+
+// Save state before unload
+window.addEventListener('beforeunload', saveState);
+</script>
+</body>
+</html>
